@@ -1,7 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:cachix/devenv-nixpkgs/rolling";
-    systems.url = "github:nix-systems/default";
+    systems.url = "github:nix-systems/default-darwin";
     devenv.url = "github:cachix/devenv";
     devenv.inputs.nixpkgs.follows = "nixpkgs";
     fenix.url = "github:nix-community/fenix";
