@@ -28,27 +28,28 @@
     }@inputs:
     let
       forEachSystem = nixpkgs.lib.genAttrs (import systems);
+      metadata = builtins.fromTOML (builtins.readFile ./app/Cargo.toml);
+      pname = metadata.package.name;
+      version = metadata.package.version;
     in
     {
       packages = forEachSystem (
         system:
         let
           pkgs = import nixpkgs { inherit system; };
-          metadata = builtins.fromTOML (builtins.readFile ./app/Cargo.toml);
         in
         {
           devenv-up = self.devShells.${system}.default.config.procfileScript;
           devenv-test = self.devShells.${system}.default.config.test;
-          dark-notify = cardboard.lib.keepFnInput pkgs.rustPackages.rustPlatform.buildRustPackage {
-            pname = metadata.package.name;
-            version = metadata.package.version;
+          ${pname} = cardboard.lib.keepFnInput pkgs.rustPackages.rustPlatform.buildRustPackage {
+            inherit pname version;
             src = ./app;
             buildInputs = [ pkgs.darwin.apple_sdk.frameworks.AppKit ];
             cargoLock = {
               lockFile = ./app/Cargo.lock;
             };
           };
-          default = self.packages.${system}.dark-notify;
+          default = self.packages.${system}.${pname};
         }
       );
 
