@@ -81,6 +81,14 @@
           };
         }
       );
+
+      overlays = {
+        ${pname} = final: prev: {
+          ${pname} = self.packages.${final.stdenv.hostPlatform.system}.${pname};
+        };
+        default = self.overlays.${pname};
+      };
+
       formatter = forEachSystem (
         system:
         let
