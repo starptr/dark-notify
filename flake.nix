@@ -9,6 +9,7 @@
       nixpkgs.follows = "nixpkgs";
     };
     flake-compat.url = "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz";
+    cardboard.url = "github:starptr/cardboard";
   };
 
   nixConfig = {
@@ -22,6 +23,7 @@
       nixpkgs,
       devenv,
       systems,
+      cardboard,
       ...
     }@inputs:
     let
@@ -37,7 +39,7 @@
         {
           devenv-up = self.devShells.${system}.default.config.procfileScript;
           devenv-test = self.devShells.${system}.default.config.test;
-          dark-notify = pkgs.rustPackages.rustPlatform.buildRustPackage {
+          dark-notify = cardboard.lib.keepFnInput pkgs.rustPackages.rustPlatform.buildRustPackage {
             pname = metadata.package.name;
             version = metadata.package.version;
             src = ./app;
